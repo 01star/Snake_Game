@@ -1,0 +1,3 @@
+This repo is mostly meant for a way to deepen the understanding of pygames, and to get a flavour of AI, since I would be using this repo further to create an AI which would learn how to play the snake game I build, by using reinforcement learning .... 
+
+The snake game is with the help of the tutorial by clear code; on his youtube video. This repo would be me mostly following his tutorial while adding a bit of my flare to it if possible. 
