@@ -3,6 +3,9 @@ import sys
 
 pygame.init()
 
+# cell info 
+cell_size = 40
+
 # creating a time object clock 
 clock = pygame.time.Clock()
 
