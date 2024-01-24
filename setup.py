@@ -4,13 +4,22 @@ import sys
 pygame.init()
 
 # cell info 
+# thr cell is a square, where the cell_size is the length of the side of the square
 cell_size = 40
+cell_number = 20
+
+# and since the screen is made up of those cells, we can  have the height and weidth of the screen as
+# height = width = cell_size * cell_numbers
+screen_height = cell_size * cell_number
+screen_width = cell_size * cell_number
 
 # creating a time object clock 
 clock = pygame.time.Clock()
 
 # creating the screen 
-screen = pygame.display.set_mode((600,750))
+# we have already calculated the screen height and width
+# we will use those to create a screen for the game
+screen = pygame.display.set_mode((screen_height, screen_width))
 
 while True:
     # event loop -- 
