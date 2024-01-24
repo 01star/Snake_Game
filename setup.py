@@ -63,9 +63,32 @@ class FRUIT:
         pygame.draw.rect(screen, (255, 0, 0), fruit_rectangle)
 
 
+# CREATING THE SNAKE
+class SNAKE:
+    # creating the snake and placing it in the center of the screen 
+    # note snake is not just a single square but a collection of one, so it would be made up of multiple 
+    # since it is a collection of block, and as the game progresses the number of cells would increase 
+    # it would be ideal to use linked list as a data structure to store the blocks ... 
+    def __init__(self):
+        self.body = [Vector2(11,10), Vector2(10,10), Vector2(9,10)]
 
-# creating object of the Fruit ... 
+    # draw the snake 
+    def draw_snake(self):
+        # for this we would need to draw for every cell/block that we have for the snake ... 
+        # so we would loop through the entire list called body 
+        for block in self.body:
+            # 1. create the rectangle with the position
+            x_pos = int(block.x) * cell_size
+            y_pos = int(block.y) * cell_size
+            snake_rectangle = pygame.Rect(x_pos, y_pos, cell_size, cell_size)
+
+            # 2. draw the rectangle on the screen 
+            pygame.draw.rect(screen, (0, 0, 255), snake_rectangle)
+
+
+# creating object of the Fruit and the snake... 
 fruit_obj = FRUIT()
+snake_obj = SNAKE()
 
 while True:
     # event loop -- 
@@ -78,6 +101,7 @@ while True:
 
     screen.fill((175, 215, 70))         # this gives the background a shade of green
     fruit_obj.draw_fruit()
+    snake_obj.draw_snake()
 
     # update the screen for everyframe ... 
     pygame.display.update()
