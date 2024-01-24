@@ -100,8 +100,8 @@ while True:
             sys.exit()                  # exit all the system processes related to this code 
 
     screen.fill((175, 215, 70))         # this gives the background a shade of green
-    fruit_obj.draw_fruit()
-    snake_obj.draw_snake()
+    fruit_obj.draw_fruit()              # drawing the fruit 
+    snake_obj.draw_snake()              # drawing the snake
 
     # update the screen for everyframe ... 
     pygame.display.update()
