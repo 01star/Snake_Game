@@ -63,6 +63,7 @@ class FRUIT:
         pygame.draw.rect(screen, (255, 0, 0), fruit_rectangle)
 
 
+
 # CREATING THE SNAKE
 class SNAKE:
     # creating the snake and placing it in the center of the screen 
@@ -90,11 +91,44 @@ class SNAKE:
     def move_snake(self):
         body_copy = self.body[:-1]                                  # copies the entire body except the tail ...
         body_copy.insert(0, self.body[0] + self.direction)          # now we can add a head to the body in the direction 
-        self.body = body_copy[:]                                    # copies the entire new moved body to the original                                   
+        self.body = body_copy[:]                                    # copies the entire new moved body to the original     
 
-# creating object of the Fruit and the snake... 
-fruit_obj = FRUIT()
-snake_obj = SNAKE()
+
+
+# This class would contain all the logic of the code ... 
+class MAIN:
+    # this is the main class for the game
+    # We are using this class to hopefully make the game loop more simple and easier to understand 
+    # Aim to define as much things about the game as possible in this class
+    def __init__(self):
+        # since we only have two objects in our game 
+        # namely snake and fruits, we will only have those two as objects in our class
+        self.snake = SNAKE()            # creating the snake obj
+        self.fruit = FRUIT()            # creating the fruit obj
+
+    # after creating the objects of our game elements, it is also important to draw those elements on the screen
+    # this is simple, since we already have defined draw functions for each of those elements
+    # we simply need to call those functions to draw them 
+    # as a last step we would have to call this function in the game loop ... 
+    def draw_elements(self):
+        # the order of drawing the elements is imp 
+        # the one drawn before would be on a layer before 
+        # the objects are like stack, one drawn later is drawn above the others 
+        self.fruit.draw_fruit()     
+        self.snake.draw_snake()
+
+
+    # this is the function that is suppose to be run for every update of the screen, 
+    # which would be true even when there is no input from the user ... 
+    def update(self):
+        # so in the game, if the user does not provide any inputs
+        # the snake would keep on moving in the direction where the head is ...
+        # the direction of the head is set by snake.direction (but in case of no input we just make the snake move)
+        self.snake.move_snake()
+
+
+# creating object of the main class ...  
+main_game = MAIN()
 
 # for now to see if the movement function works, we can create a new event ...
 # this event is that it would movce the snake at priodic time ...
@@ -113,24 +147,23 @@ while True:
             sys.exit()                  # exit all the system processes related to this code 
 
         if(event.type == SCREEN_UPDATE):
-            snake_obj.move_snake()
+            main_game.update()
 
         if (event.type == pygame.KEYDOWN):
             if event.key == pygame.K_UP :
-                snake_obj.direction = Vector2(0,-1)
+                main_game.snake.direction = Vector2(0,-1)
 
             if event.key == pygame.K_DOWN :
-                snake_obj.direction = Vector2(0,1)
+                main_game.snake.direction = Vector2(0,1)
 
             if event.key == pygame.K_LEFT :
-                snake_obj.direction = Vector2(-1,0)
+                main_game.snake.direction = Vector2(-1,0)
 
             if event.key == pygame.K_RIGHT :
-                snake_obj.direction = Vector2(1,0)
+                main_game.snake.direction = Vector2(1,0)
 
     screen.fill((175, 215, 70))         # this gives the background a shade of green
-    fruit_obj.draw_fruit()              # drawing the fruit 
-    snake_obj.draw_snake()              # drawing the snake
+    main_game.draw_elements()           # creating the snake and fruits in the game ... 
 
     # update the screen for everyframe ... 
     pygame.display.update()
