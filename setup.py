@@ -31,6 +31,10 @@ class FRUIT:
     # fruit needs to be placed at a position, so we need x and y co-oridnates for it ...
     # we would also need a rectangle to place the fruit on the screen ...
     def __init__(self):
+        self.randomize()
+
+    def randomize(self):
+        # this function basically randomizes the location of the fruit itself ... 
         # the position of the fruit spawn should be random ...
         self.x = random.randint(0, CELL_NUMBER - 1)
         self.y = random.randint(0, CELL_NUMBER - 1)
@@ -38,7 +42,7 @@ class FRUIT:
         # vectors are more convinient data-structures to use cause of vector operations 
         # so we will make a position vector (x, y)
         self.position = Vector2(self.x, self.y) * CELL_SIZE
-
+    
     def draw_fruit(self):
         # tasks this functions needs to do ...
             # ** create a rectangle
@@ -125,6 +129,46 @@ class MAIN:
         # the snake would keep on moving in the direction where the head is ...
         # the direction of the head is set by snake.direction (but in case of no input we just make the snake move)
         self.snake.move_snake()
+
+        # we also want to check for collsiion between the snake and fruit, 
+        # so we call the collition fucntion, we have defined in the class  
+        self.check_collision()
+
+    def check_collision(self):
+        # if the snake is at the position of the fruit, its a collision
+        # now, we can get the position of the fruit from the position variable in its class
+        # but snake does not have that, but we can check for the first element of the body -- the head
+        # now, if they are the same, then we know that a collision happened between them ... 
+
+        # the issue is, the body of the sanke is a list of vectors representing cells, and not pixels 
+        # while the fruit does the opposite, it stores the position as pixels ... 
+        # so to make them equal we would need to multiply the snake's head vector by cell_size 
+        if (self.fruit.position == self.snake.body[0] * CELL_SIZE):
+            # now we need to have two features in this function 
+                # 1. we should delete this fruit and respawn a new one
+                # 2. and we should increase the length of our snake by 1 cell ...
+            
+            # Feature 1 -- 
+            # Approach 1 ...
+                # so for the first feature, we just need to create a new object for the fruit element
+                # doing so, it will replace the old object with the new object
+                # and we have intiallized the fruit class to always have a randowm spawn location for the fruit
+                # So, by simply creating a new object for fruit we achive both our goals for feature one 
+                # self.fruit =  FRUIT()
+
+            # Approach 2 ...
+                # we randomize the location of the fruit itself
+                # for this we can use the randomize function, which we can define in the fruit class itself 
+                # this apporach is better than 
+            self.fruit.randomize()
+
+
+            # Feature 2
+            # Approach 1 -- 
+                # Now for second feature, we need to add an object to the end of the snake 
+                # so we can just append the element to the end of the body
+                # and the element to be iserted would be the same as the last element of the body
+            self.snake.body.append(self.snake.body[-1])
 
 
 # creating object of the main class ...  
