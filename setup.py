@@ -97,6 +97,15 @@ class SNAKE:
         body_copy.insert(0, self.body[0] + self.direction)          # now we can add a head to the body in the direction 
         self.body = body_copy[:]                                    # copies the entire new moved body to the original     
 
+    def add_block(self):
+        # this function just adds a block to the body of the snake
+        # must only be called when a fruit is eaten
+
+        # to implement it, we just make a copy of the last element in the body 
+        # and append it to the very end of the list (body)
+        snake_tail = self.body[-1]
+        self.body.append(snake_tail)
+
 
 
 # This class would contain all the logic of the code ... 
@@ -168,7 +177,8 @@ class MAIN:
                 # Now for second feature, we need to add an object to the end of the snake 
                 # so we can just append the element to the end of the body
                 # and the element to be iserted would be the same as the last element of the body
-            self.snake.body.append(self.snake.body[-1])
+                # this all has been done in the add_block function of the snake class
+            self.snake.add_block()
 
 
 # creating object of the main class ...  
