@@ -21,6 +21,10 @@ CELL_NUMBER = 20
 screen_height = CELL_SIZE * CELL_NUMBER
 screen_width = CELL_SIZE * CELL_NUMBER
 
+
+# creating a dictionary for storing the directions ... 
+Directions = {'snake_up' : Vector2(0,-1), 'snake_down' : Vector2(0,1), 'snake_left' : Vector2(-1,0), 'snake_right' : Vector2(1,0) }
+
 # creating the screen 
 # we have the width and height in the cell file ... 
 screen = pygame.display.set_mode((screen_height, screen_width))
@@ -87,18 +91,119 @@ class SNAKE:
         # this is the default direction. which is move the snake forward. 
         self.direction = Vector2(1,0)       # for now, it just moves to the right ...
 
+        # this is all loading the graphics for the snake itself ...
+        # first loading the snake body 
+        self.snake_bodyVertical = pygame.image.load('Graphics/snake/body/body_vertical.png').convert_alpha()
+        self.snake_bodyHorizontal = pygame.image.load('Graphics/snake/body/body_horizontal.png').convert_alpha()
+
+        # second loading the body curve parts ...
+        self.snake_body_bottomLeft = pygame.image.load('Graphics/snake/body_turn_peice/body_bl.png').convert_alpha()
+        self.snake_body_bottomRight = pygame.image.load('Graphics/snake/body_turn_peice/body_br.png').convert_alpha()
+        self.snake_body_topLeft = pygame.image.load('Graphics/snake/body_turn_peice/body_tl.png').convert_alpha()
+        self.snake_body_topRight = pygame.image.load('Graphics/snake/body_turn_peice/body_tr.png').convert_alpha()
+
+        # third loading the orientation of the head ... 
+        self.snake_headLeft = pygame.image.load('Graphics/snake/snake_head/head_left.png').convert_alpha()
+        self.snake_headRight = pygame.image.load('Graphics/snake/snake_head/head_right.png').convert_alpha()
+        self.snake_headUp = pygame.image.load('Graphics/snake/snake_head/head_up.png').convert_alpha()
+        self.snake_headDown = pygame.image.load('Graphics/snake/snake_head/head_down.png').convert_alpha()
+
+        # fourth loading all the tail orientations ... 
+        self.snake_tailLeft = pygame.image.load('Graphics/snake/snake_tail/tail_left.png').convert_alpha()
+        self.snake_tailRight = pygame.image.load('Graphics/snake/snake_tail/tail_right.png').convert_alpha()
+        self.snake_tailUp = pygame.image.load('Graphics/snake/snake_tail/tail_up.png').convert_alpha()
+        self.snake_tailDown = pygame.image.load('Graphics/snake/snake_tail/tail_down.png').convert_alpha()
+
+
     # draw the snake 
     def draw_snake(self):
+
         # for this we would need to draw for every cell/block that we have for the snake ... 
         # so we would loop through the entire list called body 
-        for block in self.body:
+        for index,block in enumerate(self.body):
             # 1. create the rectangle with the position
             x_pos = int(block.x) * CELL_SIZE
             y_pos = int(block.y) * CELL_SIZE
             snake_rectangle = pygame.Rect(x_pos, y_pos, CELL_SIZE, CELL_SIZE)
 
-            # 2. draw the rectangle on the screen 
-            pygame.draw.rect(screen, (0, 0, 255), snake_rectangle)
+            # This apporach is for no graphics 
+            # # 2. draw the rectangle on the screen 
+            # pygame.draw.rect(screen, (0, 0, 255), snake_rectangle)
+
+            # find the direction of head .. 
+            if index == 0:              # if its the head
+                self.update_head_graphics()
+                screen.blit(self.head, snake_rectangle)
+
+            elif (index == len(self.body) - 1):
+                self.update_tail_graphics()
+                screen.blit(self.tail, snake_rectangle)
+            else:
+                previous_block = self.body[index - 1]
+                next_block = self.body[index + 1]
+
+                # finding the relatiave direction of the previous and next block w.r.t block
+                prev_block_direction = previous_block - block
+                next_block_direction = next_block - block
+
+                # now if the x value of all the previous and next is same, we in a vertical line -- 
+                if (previous_block.x == next_block.x):
+                    screen.blit(self.snake_bodyVertical, snake_rectangle)
+
+                # and if the y value of both the previous and next block is the same, we in a horizontal line -- 
+                elif (previous_block.y == next_block.y):
+                    screen.blit(self.snake_bodyHorizontal, snake_rectangle)
+
+                # We have four corners left now, each which can be represented as two pair of conditions 
+                
+                # first corner would be the bottom_right corner --
+                # now if the relative direction of the previous block is up and relavtive direction of next block is left
+                # or the relative direction of next block is up and relative direction of previous block is left ...
+                    # it the bottom right corner ...
+                elif (prev_block_direction == Directions['snake_up'] and next_block_direction == Directions['snake_left']) or (prev_block_direction == Directions['snake_left'] and next_block_direction == Directions['snake_up']):
+                    screen.blit(self.snake_body_bottomRight, snake_rectangle)
+
+                # now using the same strategy for other corner
+                # bottom left corner --
+                elif (prev_block_direction == Directions['snake_up'] and next_block_direction == Directions['snake_right']) or (prev_block_direction == Directions['snake_right'] and next_block_direction == Directions['snake_up']):
+                    screen.blit(self.snake_body_bottomLeft, snake_rectangle)
+
+                # top right corner --
+                elif (prev_block_direction == Directions['snake_down'] and next_block_direction == Directions['snake_left']) or (prev_block_direction == Directions['snake_left'] and next_block_direction == Directions['snake_down']):
+                    screen.blit(self.snake_body_topRight, snake_rectangle)
+
+                # top left corner -- 
+                elif (prev_block_direction == Directions['snake_down'] and next_block_direction == Directions['snake_right']) or (prev_block_direction == Directions['snake_right'] and next_block_direction == Directions['snake_down']):
+                    screen.blit(self.snake_body_topLeft, snake_rectangle)
+             
+            
+    def update_head_graphics(self):
+        # the direction of the head would always be the same as the direction of the input ...
+        head_direction = self.direction
+
+        if head_direction == Directions['snake_up']:
+            self.head = self.snake_headUp
+        elif head_direction == Directions['snake_down']:
+            self.head = self.snake_headDown
+        elif head_direction == Directions['snake_left']:
+            self.head = self.snake_headLeft
+        elif head_direction == Directions['snake_right']:
+            self.head = self.snake_headRight
+            
+    def update_tail_graphics(self):
+        # direction of the tail can be found from the change in vector values from the previous body node vector
+        tail_direction = self.body[-1] - self.body[-2]
+
+        if tail_direction == Directions['snake_up']:
+            self.tail = self.snake_tailUp
+        elif tail_direction == Directions['snake_down']:
+            self.tail = self.snake_tailDown
+        elif tail_direction == Directions['snake_left']:
+            self.tail = self.snake_tailLeft
+        elif tail_direction == Directions['snake_right']:
+            self.tail = self.snake_tailRight
+        
+
 
     def move_snake(self):
         body_copy = self.body[:-1]                                  # copies the entire body except the tail ...
@@ -248,19 +353,19 @@ while True:
         if (event.type == pygame.KEYDOWN):
             # check for the upkey press,and ensuring that it does not happen if the snake is going down 
             if (event.key == pygame.K_UP) and (main_game.snake.direction.y != 1):
-                main_game.snake.direction = Vector2(0,-1)
+                main_game.snake.direction = Directions['snake_up']
 
             # check for the downkey press,and ensuring that it does not happen if the snake is going up 
             if (event.key == pygame.K_DOWN) and (main_game.snake.direction.y != -1):
-                main_game.snake.direction = Vector2(0,1)
+                main_game.snake.direction = Directions['snake_down']
 
             # check for the leftkey press,and ensuring that it does not happen if the snake is going right 
             if (event.key == pygame.K_LEFT) and (main_game.snake.direction.x != 1):
-                main_game.snake.direction = Vector2(-1,0)
+                main_game.snake.direction = Directions['snake_left']
 
             # check for the rightkey press,and ensuring that it does not happen if the snake is going left 
             if (event.key == pygame.K_RIGHT) and (main_game.snake.direction.x != -1):
-                main_game.snake.direction = Vector2(1,0)
+                main_game.snake.direction = Directions['snake_right']
 
     screen.fill((175, 215, 70))         # this gives the background a shade of green
     main_game.draw_elements()           # creating the snake and fruits in the game ... 
