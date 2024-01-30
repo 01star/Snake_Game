@@ -26,6 +26,11 @@ screen_width = CELL_SIZE * CELL_NUMBER
 screen = pygame.display.set_mode((screen_height, screen_width))
 
 
+# importing all the graphics from the graphics folder to make the game look pretty ... 
+# first the fruit or apple 
+apple = pygame.image.load('Graphics/Fruit/apple.png')
+
+
 # CREATING THE FRUIT ... 
 class FRUIT:
     # fruit needs to be placed at a position, so we need x and y co-oridnates for it ...
@@ -64,7 +69,10 @@ class FRUIT:
             # the screen you want to display on, which is the 'screen' for us 
             # the color you want the rectangle to have, which is Red for us
             # the rectangle you want to draw, for us is fruit_rectangle
-        pygame.draw.rect(screen, (255, 0, 0), fruit_rectangle)
+        # pygame.draw.rect(screen, (255, 0, 0), fruit_rectangle)
+
+        # instead of drawing the rectangle, i am going to draw the apple ... 
+        screen.blit(apple, fruit_rectangle)
 
 
 
