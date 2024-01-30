@@ -75,7 +75,7 @@ class SNAKE:
     # since it is a collection of block, and as the game progresses the number of cells would increase 
     # it would be ideal to use linked list as a data structure to store the blocks ... 
     def __init__(self):
-        self.body = [Vector2(11,10), Vector2(10,10), Vector2(9,10)]
+        self.body = [Vector2(10,10), Vector2(9,10), Vector2(8,10)]
         # this is the default direction. which is move the snake forward. 
         self.direction = Vector2(1,0)       # for now, it just moves to the right ...
 
@@ -143,6 +143,10 @@ class MAIN:
         # so we call the collition fucntion, we have defined in the class  
         self.check_collision()
 
+        # check of the end of game states too 
+        # so we simply call the check_end_state function
+        self.check_end_state()
+
     def check_collision(self):
         # if the snake is at the position of the fruit, its a collision
         # now, we can get the position of the fruit from the position variable in its class
@@ -180,6 +184,36 @@ class MAIN:
                 # this all has been done in the add_block function of the snake class
             self.snake.add_block()
 
+    
+    def check_end_state(self):
+        # End state can only happen in two states, 
+            # check if the snake is outside the screen
+            # if the snake was colliding with its own body 
+        
+        snake_head_post = self.snake.body[0] * CELL_SIZE
+        # first condition, going out of the screen
+        # we just have to make sure that the head of the snake is never outside the screen ...
+        if (snake_head_post.x >= screen_width or snake_head_post.x < 0 or snake_head_post.y <0 or snake_head_post.y >= screen_height):
+            # game over 
+            self.game_over()
+            print('game over')
+
+        
+        # the second condition is snake biting itself
+        # to check for this, we can simply loop through the entire body of the snake
+        # so if the position of head of the snake == any other body then game over
+        for body_cell in self.snake.body[1:]:
+            if (body_cell.x * CELL_SIZE == snake_head_post.x and body_cell.y * CELL_SIZE == snake_head_post.y):
+                # game over
+                self.game_over()
+                print('game over biting the body')
+
+    
+    def game_over(self):
+    # this function is called when the game is in the game over state
+        pygame.quit()
+        sys.exit()
+
 
 # creating object of the main class ...  
 main_game = MAIN()
@@ -204,16 +238,20 @@ while True:
             main_game.update()
 
         if (event.type == pygame.KEYDOWN):
-            if event.key == pygame.K_UP :
+            # check for the upkey press,and ensuring that it does not happen if the snake is going down 
+            if (event.key == pygame.K_UP) and (main_game.snake.direction.y != 1):
                 main_game.snake.direction = Vector2(0,-1)
 
-            if event.key == pygame.K_DOWN :
+            # check for the downkey press,and ensuring that it does not happen if the snake is going up 
+            if (event.key == pygame.K_DOWN) and (main_game.snake.direction.y != -1):
                 main_game.snake.direction = Vector2(0,1)
 
-            if event.key == pygame.K_LEFT :
+            # check for the leftkey press,and ensuring that it does not happen if the snake is going right 
+            if (event.key == pygame.K_LEFT) and (main_game.snake.direction.x != 1):
                 main_game.snake.direction = Vector2(-1,0)
 
-            if event.key == pygame.K_RIGHT :
+            # check for the rightkey press,and ensuring that it does not happen if the snake is going left 
+            if (event.key == pygame.K_RIGHT) and (main_game.snake.direction.x != -1):
                 main_game.snake.direction = Vector2(1,0)
 
     screen.fill((175, 215, 70))         # this gives the background a shade of green
