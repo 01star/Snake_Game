@@ -232,6 +232,7 @@ class MAIN:
         self.snake = SNAKE()            # creating the snake obj
         self.fruit = FRUIT()            # creating the fruit obj
 
+
     # after creating the objects of our game elements, it is also important to draw those elements on the screen
     # this is simple, since we already have defined draw functions for each of those elements
     # we simply need to call those functions to draw them 
@@ -240,6 +241,7 @@ class MAIN:
         # the order of drawing the elements is imp 
         # the one drawn before would be on a layer before 
         # the objects are like stack, one drawn later is drawn above the others 
+        self.draw_grass()
         self.fruit.draw_fruit()     
         self.snake.draw_snake()
 
@@ -259,6 +261,7 @@ class MAIN:
         # check of the end of game states too 
         # so we simply call the check_end_state function
         self.check_end_state()
+
 
     def check_collision(self):
         # if the snake is at the position of the fruit, its a collision
@@ -327,6 +330,25 @@ class MAIN:
         pygame.quit()
         sys.exit()
 
+    
+    def draw_grass(self):
+        grass_color = (167, 209, 100)                # a shade of darker green 
+
+        # so the aim is to make to background more like a check patter
+        # alternating between light and dark green 
+        # loop throught the mesh (2D array)
+        for i in range(CELL_NUMBER):
+            for j in range(CELL_NUMBER):
+                x_posRect = i * CELL_SIZE
+                y_posRect = j * CELL_SIZE
+                grass_rect = pygame.Rect(x_posRect, y_posRect, CELL_SIZE, CELL_SIZE)
+
+                if (i % 2 == 0) and (j % 2 == 0):
+                    pygame.draw.rect(screen, grass_color, grass_rect)
+                
+                elif (i % 2 != 0) and (j % 2 != 0):
+                    pygame.draw.rect(screen,grass_color, grass_rect)
+
 
 # creating object of the main class ...  
 main_game = MAIN()
@@ -339,6 +361,10 @@ pygame.time.set_timer(SCREEN_UPDATE, 150)
 
 # THIS IS THE GAME LOOP 
 while True:
+
+    screen.fill((175, 215, 70))         # this gives the background a shade of green
+    main_game.draw_elements()           # creating the snake and fruits in the game ... 
+
     # event loop -- 
     # check for all possible event in pygame ...
     for event in pygame.event.get():
@@ -366,9 +392,6 @@ while True:
             # check for the rightkey press,and ensuring that it does not happen if the snake is going left 
             if (event.key == pygame.K_RIGHT) and (main_game.snake.direction.x != -1):
                 main_game.snake.direction = Directions['snake_right']
-
-    screen.fill((175, 215, 70))         # this gives the background a shade of green
-    main_game.draw_elements()           # creating the snake and fruits in the game ... 
 
     # update the screen for everyframe ... 
     pygame.display.update()
