@@ -34,6 +34,9 @@ screen = pygame.display.set_mode((screen_height, screen_width))
 # first the fruit or apple 
 apple = pygame.image.load('Graphics/Fruit/apple.png')
 
+# now we can add the font to the game, 
+game_font = pygame.font.Font('Text/PoetsenOne-Regular.ttf', 25)
+
 
 # CREATING THE FRUIT ... 
 class FRUIT:
@@ -244,6 +247,7 @@ class MAIN:
         self.draw_grass()
         self.fruit.draw_fruit()     
         self.snake.draw_snake()
+        self.draw_score()
 
 
     # this is the function that is suppose to be run for every update of the screen, 
@@ -343,11 +347,33 @@ class MAIN:
                 y_posRect = j * CELL_SIZE
                 grass_rect = pygame.Rect(x_posRect, y_posRect, CELL_SIZE, CELL_SIZE)
 
+                # in every even row, at every even cell -- shade it a bit darker
                 if (i % 2 == 0) and (j % 2 == 0):
                     pygame.draw.rect(screen, grass_color, grass_rect)
                 
+                # do the same for every odd row, at every odd cell 
                 elif (i % 2 != 0) and (j % 2 != 0):
                     pygame.draw.rect(screen,grass_color, grass_rect)
+
+                # this would create a checkers function on the background ... 
+                    
+    
+    def draw_score(self):
+        # get a way to get the score
+        # for now lets just say the lenght of the snake is the score of the game ... 
+        game_score = 'Score : ' + str(len(self.snake.body))          # type casted to be a string 
+
+        # draw the score text ...
+        score_surface = game_font.render(game_score, True, (56, 74, 12))
+
+        # declaring the variables for the font position
+        font_yPos = int(screen_height - 40)
+        font_xPos = int(screen_width - 80)
+
+        # drawing a rectangle for the score ... 
+        score_rect = score_surface.get_rect(center = (font_xPos, font_yPos))
+        screen.blit(score_surface, score_rect)
+
 
 
 # creating object of the main class ...  
